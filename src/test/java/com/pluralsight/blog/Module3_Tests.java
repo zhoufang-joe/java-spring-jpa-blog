@@ -2,7 +2,6 @@ package com.pluralsight.blog;
 
 import com.pluralsight.blog.data.CategoryRepository;
 import com.pluralsight.blog.model.Category;
-import com.pluralsight.blog.model.Post;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,18 +15,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.stereotype.Controller;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.thymeleaf.templateresource.ITemplateResource;
-import org.thymeleaf.templateresource.StringTemplateResource;
-
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;

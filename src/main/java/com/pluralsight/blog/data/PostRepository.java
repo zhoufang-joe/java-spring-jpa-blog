@@ -36,10 +36,6 @@ public class PostRepository {
             new Post(7l, "Travel Keyboard",
                     "You never know when inspiration for your latest novel will strike. Meet the perfect travel keyboard for your random thoughts.",
                     "You never know when inspiration for your latest novel will strike. Meet the perfect travel keyboard for your random thoughts.",
-                    "Sarah Holderness", new Date("10/31/2019")),
-            new Post(8l, "SD Card Reader",
-                    "When a stranger passes us a top secret SD card the adventure begins.  Jason Bourne says, \"Hi\".",
-                    "When a stranger passes us a top secret SD card the adventure begins.  Jason Bourne says, \"Hi\".",
                     "Sarah Holderness", new Date("10/31/2019"))
     ));
 
