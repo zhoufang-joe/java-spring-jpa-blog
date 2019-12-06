@@ -2,6 +2,7 @@ package com.pluralsight.blog;
 
 import com.pluralsight.blog.data.CategoryRepository;
 import com.pluralsight.blog.model.Category;
+import com.pluralsight.blog.model.Post;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -47,13 +48,15 @@ public class Module3_Tests {
 
     @Autowired
     private PostRepository postRepository;
-
-    private PostRepository spyPostRepository;
+//
+//    private PostRepository spyPostRepository;
+    private PostRepository mockPostRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    private CategoryRepository spyCategoryRepository;
+//
+//    private CategoryRepository spyCategoryRepository;
+    private CategoryRepository mockCategoryRepository;
 
     private Method method = null;
 
@@ -66,10 +69,13 @@ public class Module3_Tests {
             //e.printStackTrace();
         }
 
-        spyPostRepository = Mockito.spy(postRepository);
-        spyCategoryRepository = Mockito.spy(categoryRepository);
+//        spyPostRepository = Mockito.spy(postRepository);
+//        spyCategoryRepository = Mockito.spy(categoryRepository);
+        mockPostRepository = Mockito.mock(PostRepository.class);
+        mockCategoryRepository = Mockito.mock(CategoryRepository.class);
         try {
-            blogController = constructor.newInstance(spyPostRepository, spyCategoryRepository); //new BlogController(spyRepository);
+            blogController = constructor.newInstance(mockPostRepository,
+                                                     mockCategoryRepository); //new BlogController(spyRepository);
         } catch (Exception e) {
             //e.printStackTrace();
         }
@@ -112,9 +118,7 @@ public class Module3_Tests {
 
         String message = "Task 3: A field called categoryRepository of type CategoryRepository does not exist in BlogController.";
         assertTrue(message, categoryRepositoryExists);
-    }
-    @Test
-    public void task_2() {
+
         // Check for BlogController constructor with CategoryRepository parameter
         Constructor<BlogController> constructor = null;
         try {
@@ -123,8 +127,49 @@ public class Module3_Tests {
             //e.printStackTrace();
         }
 
-        String message = "Task 4: A BlogController constructor with a PostRepository parameter and a CategoryRepository parameter does not exist.";
+        message = "Task 4: A BlogController constructor with a PostRepository parameter and a CategoryRepository parameter does not exist.";
         assertNotNull(message, constructor);
+    }
+    @Test
+    public void task_2() {
+        // Setup
+        List<Category> categories = categoryRepository.findAll();
+        Mockito.when(mockCategoryRepository.findAll()).thenReturn(categories);
+        ModelMap modelMap = Mockito.mock(ModelMap.class);
+        Mockito.when(modelMap.put("categories", categories)).thenReturn(null);
+
+
+        try {
+            Method listPostsMethod = BlogController.class.getMethod("listPosts", ModelMap.class);
+            listPostsMethod.invoke(blogController, modelMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Verify findAll()
+        boolean calledFind = false;
+        try {
+            Mockito.verify(mockCategoryRepository).findAll();
+            calledFind = true;
+        } catch (Error e) {
+            e.printStackTrace();
+        }
+        String message = "Task 9: Did not call CategoryRepository's findAll() method in BlogController.";
+        assertTrue(message, calledFind);
+
+        // Verify ModelMap put()
+        boolean putCalledCorrectly = false;
+        try {
+            Mockito.verify(modelMap).put("categories", categories);
+            //Mockito.verify(modelMap, Mockito.atLeast(2)).put(Mockito.anyString(), Mockito.any(List.class));
+            putCalledCorrectly = true;
+        } catch (Error e) {
+            e.printStackTrace();
+        }
+
+        assertTrue("Task 10: Did not call put() on the ModelMap with a key of \"categories\" and the result of calling " +
+                        "categoryRepository.findAll().",
+                putCalledCorrectly);
     }
 
     @Test
@@ -289,7 +334,7 @@ public class Module3_Tests {
         } catch (Exception e) {
 //            e.printStackTrace();
         }
-        Mockito.when(spyCategoryRepository.findById(1l)).thenReturn(java.util.Optional.ofNullable(category));
+        Mockito.when(mockCategoryRepository.findById(1l)).thenReturn(java.util.Optional.ofNullable(category));
         ModelMap modelMap = Mockito.mock(ModelMap.class);
         Mockito.when(modelMap.put("category", category)).thenReturn(null);
 
@@ -302,7 +347,7 @@ public class Module3_Tests {
         // Verify findById()
         boolean calledFind = false;
         try {
-            Mockito.verify(spyCategoryRepository).findById(1l);
+            Mockito.verify(mockCategoryRepository).findById(1l);
             calledFind = true;
         } catch (Error e) {
             //e.printStackTrace();
@@ -330,76 +375,76 @@ public class Module3_Tests {
         // Verify modelMap.put("posts", posts)
 
         // Setup
-//        Category category = categoryRepository.findById(1l).orElse(null);
-//        List<Post> posts = postRepository.findByCategory(category);
-//        Mockito.when(spyPostRepository.findByCategory(category)).thenReturn(posts);
-//        ModelMap modelMap = Mockito.mock(ModelMap.class);
-//        Mockito.when(modelMap.put("posts", posts)).thenReturn(null);
-//
-//        try {
-//            method.invoke(blogController, 1l, modelMap);
-//        } catch (Exception e) {
-//            //e.printStackTrace();
-//        }
-//
-//        // Verify findById()
-//        boolean calledFind = false;
-//        try {
-//            Mockito.verify(spyPostRepository, Mockito.atLeast(1)).findByCategory(Mockito.any(Category.class));
-//            calledFind = true;
-//        } catch (Error e) {
-//            e.printStackTrace();
-//        }
-//        String message = "Task 9: Did not call PostRepository's findByCategory() method in BlogController.";
-//        assertTrue(message, calledFind);
-//
-//        // Verify ModelMap put()
-//        boolean putCalledCorrectly = false;
-//        try {
-//            Mockito.verify(modelMap, Mockito.atLeast(1)).put(Mockito.anyString(), Mockito.any(List.class));
-//            putCalledCorrectly = true;
-//        } catch (Error e) {
-//            e.printStackTrace();
-//        }
-//
-//        assertTrue("Task 9: Did not call put() on the ModelMap with a key of \"posts\" and the result of calling " +
-//                        "findByCategory(category).",
-//                putCalledCorrectly);
+        Category category = categoryRepository.findById(1l).orElse(null);
+        List<Post> posts = postRepository.findByCategory(category);
+        Mockito.when(mockPostRepository.findByCategory(category)).thenReturn(posts);
+        ModelMap modelMap = Mockito.mock(ModelMap.class);
+        Mockito.when(modelMap.put("posts", posts)).thenReturn(null);
 
-        // Confirming 3 <span>'s show up.
-        Document doc = null;
-        String errorInfo = "";
         try {
-            MvcResult result = this.mvc.perform(get("/category/1")).andReturn();
-            MockHttpServletResponse response = result.getResponse();
-            String content = response.getContentAsString();
-
-            doc = Jsoup.parse(content);
+            method.invoke(blogController, 1l, modelMap);
         } catch (Exception e) {
-            errorInfo = e.getLocalizedMessage();
             //e.printStackTrace();
         }
-        String message = "Task 9: The template has errors - " + errorInfo + ".";
-        assertNotNull(message, doc);
 
-        Elements aElements = doc.getElementsByTag("a");
-        assertTrue("Task 9: There should be at least 3 anchor tags generated in category-list.html by the passed in posts list.", aElements.size()>=3);
+        // Verify findById()
+        boolean calledFind = false;
+        try {
+            Mockito.verify(mockPostRepository, Mockito.atLeast(1)).findByCategory(Mockito.any());
+            calledFind = true;
+        } catch (Error e) {
+            e.printStackTrace();
+        }
+        String message = "Task 9: Did not call PostRepository's findByCategory() method in BlogController.";
+        assertTrue(message, calledFind);
 
-        for (Element elem : aElements) {
-            System.out.println("elem = " + elem.text());
-            System.out.println("elem href = " + elem.attr("href"));
+        // Verify ModelMap put()
+        boolean putCalledCorrectly = false;
+        try {
+            Mockito.verify(modelMap, Mockito.atLeast(1)).put(Mockito.anyString(), Mockito.any(List.class));
+            putCalledCorrectly = true;
+        } catch (Error e) {
+            e.printStackTrace();
         }
 
-//        boolean anchorTagsCorrect = true;
-//        int j = 4;
-//        for (int i = 1; i <=3; i++) {
-//            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+i, aElements.get(j).attr("href"));
-//            j+=3;
-//        }
+        assertTrue("Task 9: Did not call put() on the ModelMap with a key of \"posts\" and the result of calling " +
+                        "findByCategory(category).",
+                putCalledCorrectly);
 
-        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+1, aElements.get(4).attr("href"));
-        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+3, aElements.get(7).attr("href"));
-        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+6, aElements.get(11).attr("href"));
+        // Confirming 3 <span>'s show up.
+//        Document doc = null;
+//        String errorInfo = "";
+//        try {
+//            MvcResult result = this.mvc.perform(get("/category/1")).andReturn();
+//            MockHttpServletResponse response = result.getResponse();
+//            String content = response.getContentAsString();
+//
+//            doc = Jsoup.parse(content);
+//        } catch (Exception e) {
+//            errorInfo = e.getLocalizedMessage();
+//            //e.printStackTrace();
+//        }
+//        message = "Task 9: The template has errors - " + errorInfo + ".";
+//        assertNotNull(message, doc);
+//
+//        Elements aElements = doc.getElementsByTag("a");
+//        assertTrue("Task 9: There should be at least 3 anchor tags generated in category-list.html by the passed in posts list.", aElements.size()>=3);
+//
+//        for (Element elem : aElements) {
+//            System.out.println("elem = " + elem.text());
+//            System.out.println("elem href = " + elem.attr("href"));
+//        }
+//
+////        boolean anchorTagsCorrect = true;
+////        int j = 4;
+////        for (int i = 1; i <=3; i++) {
+////            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+i, aElements.get(j).attr("href"));
+////            j+=3;
+////        }
+//
+//        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+1, aElements.get(4).attr("href"));
+//        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+3, aElements.get(7).attr("href"));
+//        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+6, aElements.get(11).attr("href"));
     }
 
     @Test

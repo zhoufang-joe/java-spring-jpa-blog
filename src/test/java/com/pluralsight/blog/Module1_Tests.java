@@ -64,7 +64,7 @@ public class Module1_Tests {
             Field field = Post.class.getDeclaredField("id");
             fieldAnnotations = field.getDeclaredAnnotations();
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         String message = "The field id should have two annotations @Id and @GeneratedValue(strategy = GenerationType.IDENTITY).";
@@ -76,7 +76,7 @@ public class Module1_Tests {
         for (Annotation annotation : fieldAnnotations) {
             if (annotation.annotationType() == Id.class) hasIdAnnotation = true;
             if (annotation.annotationType() == GeneratedValue.class) hasGeneratedAnnotation = true;
-            System.out.println("annotation = " + annotation);
+            //System.out.println("annotation = " + annotation);
         }
 
         assertTrue("The field id does not have the annotation @Id.", hasIdAnnotation);
@@ -91,7 +91,7 @@ public class Module1_Tests {
             Field field = Post.class.getDeclaredField("body");
             fieldAnnotations = field.getDeclaredAnnotations();
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         String message = "The field body should have 2 annotations @Column(length=1000000) and @Lob.";
@@ -103,7 +103,7 @@ public class Module1_Tests {
         for (Annotation annotation : fieldAnnotations) {
             if (annotation.annotationType() == Column.class) {hasColumnAnnotation = true;}
             if (annotation.annotationType() == Lob.class) hasLobAnnotation = true;
-            System.out.println("annotation = " + annotation);
+            //System.out.println("annotation = " + annotation);
         }
 
         assertTrue("The field body does not have the annotation @Column(length=1000000).", hasColumnAnnotation);
@@ -118,7 +118,7 @@ public class Module1_Tests {
             Field field = Post.class.getDeclaredField("date");
             fieldAnnotations = field.getDeclaredAnnotations();
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         String message = "The field date should have 1 annotation @Temporal(TemporalType.DATE).";

@@ -67,7 +67,7 @@ public class Module2_Tests {
             Field field = Category.class.getDeclaredField("id");
             fieldAnnotations = field.getDeclaredAnnotations();
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         String message = "Task 1: The field id should have two annotations @Id and @GeneratedValue(strategy = GenerationType.IDENTITY).";
@@ -79,7 +79,7 @@ public class Module2_Tests {
         for (Annotation annotation : fieldAnnotations) {
             if (annotation.annotationType() == Id.class) hasIdAnnotation = true;
             if (annotation.annotationType() == GeneratedValue.class) hasGeneratedAnnotation = true;
-            System.out.println("annotation = " + annotation);
+            //System.out.println("annotation = " + annotation);
         }
 
         assertTrue("Task 1: The field id does not have the annotation @Id.", hasIdAnnotation);
@@ -93,7 +93,7 @@ public class Module2_Tests {
         try {
             field =  Post.class.getDeclaredField("category");
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         String message = "Task 2: The Post class does not have a Category field named category.";
@@ -106,6 +106,20 @@ public class Module2_Tests {
         message = "Task 2: The field category should have 1 annotation - the @ManyToOne annotation.";
         assertEquals(message, 1, annotations.length);
         assertEquals(message, ManyToOne.class, annotations[0].annotationType());
+
+        // Check for getter
+        Method getCategoryMethod = null;
+        try {
+            getCategoryMethod = Post.class.getMethod("getCategory");
+        } catch (NoSuchMethodException e) { }
+        assertNotNull("Task 3: The getCategory() method does not exist in the Post class.", getCategoryMethod);
+
+        // Check for setter
+        Method setCategoryMethod = null;
+        try {
+            setCategoryMethod = Post.class.getMethod("setCategory", Category.class);
+        } catch (NoSuchMethodException e) { }
+        assertNotNull("Task 3: The setCategory() method does not exist in the Post class.", setCategoryMethod);
     }
 
     @Test
@@ -116,7 +130,7 @@ public class Module2_Tests {
         try {
             field =  Category.class.getDeclaredField("posts");
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         String message = "Task 3: The Category class does not have a List of Posts field named posts.";
@@ -133,7 +147,7 @@ public class Module2_Tests {
                  arrayListInit = true;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         assertTrue("Task 3: The List of posts was not initialized in the default constructor.", arrayListInit);
 
@@ -142,7 +156,7 @@ public class Module2_Tests {
         try {
             getPostsMethod = Category.class.getMethod("getPosts");
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         assertNotNull("Task 3: The getPosts() method does not exist in the Category class.", getPostsMethod);
 
@@ -151,7 +165,7 @@ public class Module2_Tests {
         try {
             addPostMethod = Category.class.getMethod("addPost", Post.class);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         assertNotNull("Task 3: The addPost(Post post) method does not exist in the Category class.", getPostsMethod);
     }
@@ -193,7 +207,7 @@ public class Module2_Tests {
             List<String> allLines = Files.readAllLines(path);
             result = String.join("\n", allLines);
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         String resultResource = "";
@@ -201,7 +215,7 @@ public class Module2_Tests {
         try (InputStream inputStream = classLoader.getResourceAsStream("data-categories.sql")) {
             resultResource = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
         assertEquals("Task 6: ", resultResource, result);
@@ -220,7 +234,7 @@ public class Module2_Tests {
             doc = Jsoup.parse(content);
         } catch (Exception e) {
             //errorInfo = e.getLocalizedMessage();
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         String message = "Task 7: The template has errors - " + errorInfo + ".";
         assertNotNull(message, doc);
