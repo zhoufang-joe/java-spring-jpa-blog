@@ -369,82 +369,43 @@ public class Module3_Tests {
                 putCalledCorrectly);
     }
 
-    @Test
+@Test
     public void task_9() {
         // Task 9 - Verify PostRepository's findByCategory() is called
-        // Verify modelMap.put("posts", posts)
-
-        // Setup
-        Category category = categoryRepository.findById(1l).orElse(null);
-        List<Post> posts = postRepository.findByCategory(category);
-        Mockito.when(mockPostRepository.findByCategory(category)).thenReturn(posts);
-        ModelMap modelMap = Mockito.mock(ModelMap.class);
-        Mockito.when(modelMap.put("posts", posts)).thenReturn(null);
-
+        // Confirming 3 <span>'s show up.
+        Document doc = null;
+        String errorInfo = "";
         try {
-            method.invoke(blogController, 1l, modelMap);
+            MvcResult result = this.mvc.perform(get("/category/1")).andReturn();
+            MockHttpServletResponse response = result.getResponse();
+            String content = response.getContentAsString();
+
+            doc = Jsoup.parse(content);
         } catch (Exception e) {
+            errorInfo = e.getLocalizedMessage();
             //e.printStackTrace();
         }
+        String message = "Task 9: The template has errors - " + errorInfo + ".";
+        assertNotNull(message, doc);
 
-        // Verify findById()
-        boolean calledFind = false;
-        try {
-            Mockito.verify(mockPostRepository, Mockito.atLeast(1)).findByCategory(Mockito.any());
-            calledFind = true;
-        } catch (Error e) {
-            e.printStackTrace();
-        }
-        String message = "Task 9: Did not call PostRepository's findByCategory() method in BlogController.";
-        assertTrue(message, calledFind);
+        Elements aElements = doc.getElementsByTag("a");
+        assertTrue("Task 9: There should be at least 3 anchor tags generated in category-list.html by the passed in posts list.", aElements.size()>=3);
 
-        // Verify ModelMap put()
-        boolean putCalledCorrectly = false;
-        try {
-            Mockito.verify(modelMap, Mockito.atLeast(1)).put(Mockito.anyString(), Mockito.any(List.class));
-            putCalledCorrectly = true;
-        } catch (Error e) {
-            e.printStackTrace();
+        for (Element elem : aElements) {
+            System.out.println("elem = " + elem.text());
+            System.out.println("elem href = " + elem.attr("href"));
         }
 
-        assertTrue("Task 9: Did not call put() on the ModelMap with a key of \"posts\" and the result of calling " +
-                        "findByCategory(category).",
-                putCalledCorrectly);
+//        boolean anchorTagsCorrect = true;
+//        int j = 4;
+//        for (int i = 1; i <=3; i++) {
+//            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+i, aElements.get(j).attr("href"));
+//            j+=3;
+//        }
 
-        // Confirming 3 <span>'s show up.
-//        Document doc = null;
-//        String errorInfo = "";
-//        try {
-//            MvcResult result = this.mvc.perform(get("/category/1")).andReturn();
-//            MockHttpServletResponse response = result.getResponse();
-//            String content = response.getContentAsString();
-//
-//            doc = Jsoup.parse(content);
-//        } catch (Exception e) {
-//            errorInfo = e.getLocalizedMessage();
-//            //e.printStackTrace();
-//        }
-//        message = "Task 9: The template has errors - " + errorInfo + ".";
-//        assertNotNull(message, doc);
-//
-//        Elements aElements = doc.getElementsByTag("a");
-//        assertTrue("Task 9: There should be at least 3 anchor tags generated in category-list.html by the passed in posts list.", aElements.size()>=3);
-//
-//        for (Element elem : aElements) {
-//            System.out.println("elem = " + elem.text());
-//            System.out.println("elem href = " + elem.attr("href"));
-//        }
-//
-////        boolean anchorTagsCorrect = true;
-////        int j = 4;
-////        for (int i = 1; i <=3; i++) {
-////            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+i, aElements.get(j).attr("href"));
-////            j+=3;
-////        }
-//
-//        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+1, aElements.get(4).attr("href"));
-//        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+3, aElements.get(7).attr("href"));
-//        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+6, aElements.get(11).attr("href"));
+        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+1, aElements.get(4).attr("href"));
+        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+3, aElements.get(7).attr("href"));
+        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+6, aElements.get(11).attr("href"));
     }
 
     @Test
