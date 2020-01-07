@@ -218,7 +218,7 @@ public class Module2_Tests {
             //e.printStackTrace();
         }
 
-        assertEquals("Task 6: ", resultResource, result);
+        assertTrue("Task 6: The `data.sql` file is not the same as `data-categories.sql`.", resultResource.equals(result));
     }
 
     @Test
