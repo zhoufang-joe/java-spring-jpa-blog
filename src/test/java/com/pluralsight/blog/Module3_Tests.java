@@ -48,14 +48,10 @@ public class Module3_Tests {
 
     @Autowired
     private PostRepository postRepository;
-//
-//    private PostRepository spyPostRepository;
     private PostRepository mockPostRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
-//
-//    private CategoryRepository spyCategoryRepository;
     private CategoryRepository mockCategoryRepository;
 
     private Method method = null;
@@ -69,8 +65,6 @@ public class Module3_Tests {
             //e.printStackTrace();
         }
 
-//        spyPostRepository = Mockito.spy(postRepository);
-//        spyCategoryRepository = Mockito.spy(categoryRepository);
         mockPostRepository = Mockito.mock(PostRepository.class);
         mockCategoryRepository = Mockito.mock(CategoryRepository.class);
         try {
@@ -240,8 +234,6 @@ public class Module3_Tests {
 
         boolean categoriesMatch = true;
         for (int i = 0; i<categories.size(); i++) {
-            System.out.println("span elem = " + spanElements.get(i+1).text());
-            System.out.println("category = " + categories.get(i));
             if (!spanElements.get(i+1).text().equals(categories.get(i).toUpperCase())) {
                 categoriesMatch = false;
                 break;
@@ -276,8 +268,6 @@ public class Module3_Tests {
         for (int i = 1; i <=3; i++) {
             assertEquals("Task 5: The href on the anchor tag is not correct.", "/category/"+i, aElements.get(i).attr("href"));
         }
-
-
     }
 
     @Test
@@ -292,7 +282,6 @@ public class Module3_Tests {
         boolean modelMapExists = false;
         boolean longExists = false;
         for (Class paramClass : classes) {
-            System.out.println("paramClass = " + paramClass);
             if (paramClass.equals(ModelMap.class))
                 modelMapExists = true;
             if (paramClass.equals(Long.class))
@@ -391,21 +380,19 @@ public class Module3_Tests {
         Elements aElements = doc.getElementsByTag("a");
         assertTrue("Task 9: There should be at least 3 anchor tags generated in category-list.html by the passed in posts list.", aElements.size()>=3);
 
-        for (Element elem : aElements) {
-            System.out.println("elem = " + elem.text());
-            System.out.println("elem href = " + elem.attr("href"));
+        if (aElements.size() == 13) {
+            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/" + 1, aElements.get(2).attr("href"));
+            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/" + 3, aElements.get(5).attr("href"));
+            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/" + 6, aElements.get(8).attr("href"));
         }
-
-//        boolean anchorTagsCorrect = true;
-//        int j = 4;
-//        for (int i = 1; i <=3; i++) {
-//            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+i, aElements.get(j).attr("href"));
-//            j+=3;
-//        }
-
-        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+1, aElements.get(4).attr("href"));
-        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+3, aElements.get(7).attr("href"));
-        assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/"+6, aElements.get(11).attr("href"));
+        else if (aElements.size() == 16) {
+            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/" + 1, aElements.get(4).attr("href"));
+            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/" + 3, aElements.get(7).attr("href"));
+            assertEquals("Task 9: The href on the anchor tag is not correct.", "/post/" + 6, aElements.get(11).attr("href"));
+        }
+        else {
+            assertTrue("Task 9: The number of anchor <a> tags on the page does not match.  Possible reasons: did not complete task 9. Or edited the Post data.sql file, or added additional anchor <a> tags.", false);
+        }
     }
 
     @Test
@@ -424,17 +411,6 @@ public class Module3_Tests {
         } catch (Exception e) {
             //e.printStackTrace();
         }
-
-//        // Verify findAll()
-//        boolean calledFind = false;
-//        try {
-//            Mockito.verify(spyCategoryRepository).findAll();
-//            calledFind = true;
-//        } catch (Error e) {
-//            e.printStackTrace();
-//        }
-//        String message = "Task 9: Did not call CategoryRepository's findAll() method in BlogController.";
-//        assertTrue(message, calledFind);
 
         // Verify ModelMap put()
         boolean putCalledCorrectly = false;

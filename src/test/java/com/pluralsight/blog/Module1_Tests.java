@@ -21,32 +21,10 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@AutoConfigureMockMvc
-//@PrepareForTest(BlogController.class)
 public class Module1_Tests {
-
-//    @Autowired
-//    private MockMvc mvc;
 
     @Autowired
     private PostRepository postRepository;
-
-//    @Autowired
-//    private BlogController blogController;
-//
-//    private Class c = null;
-//    private Method method = null;
-//    private boolean methodParametersExist = false;
-
-    @Before
-    public void setup() {
-//        try {
-//            MvcResult result  = this.mvc.perform(get("/")).andReturn();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }
-
 
     @Test
     public void task_1() {
@@ -76,7 +54,6 @@ public class Module1_Tests {
         for (Annotation annotation : fieldAnnotations) {
             if (annotation.annotationType() == Id.class) hasIdAnnotation = true;
             if (annotation.annotationType() == GeneratedValue.class) hasGeneratedAnnotation = true;
-            //System.out.println("annotation = " + annotation);
         }
 
         assertTrue("The field id does not have the annotation @Id.", hasIdAnnotation);
@@ -103,7 +80,6 @@ public class Module1_Tests {
         for (Annotation annotation : fieldAnnotations) {
             if (annotation.annotationType() == Column.class) {hasColumnAnnotation = true;}
             if (annotation.annotationType() == Lob.class) hasLobAnnotation = true;
-            //System.out.println("annotation = " + annotation);
         }
 
         assertTrue("The field body does not have the annotation @Column(length=1000000).", hasColumnAnnotation);
@@ -123,8 +99,6 @@ public class Module1_Tests {
 
         String message = "The field date should have 1 annotation @Temporal(TemporalType.DATE).";
         assertTrue(message, fieldAnnotations.length == 1);
-
-        System.out.println("annotation = " + fieldAnnotations[0]);
 
         message = "The field date does not have the annotation @Temporal(TemporalType.DATE).";
         assertTrue(message, fieldAnnotations[0].annotationType() == Temporal.class);
